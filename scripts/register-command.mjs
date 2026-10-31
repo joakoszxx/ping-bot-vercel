@@ -1,6 +1,15 @@
 const { DISCORD_BOT_TOKEN, DISCORD_APPLICATION_ID, DISCORD_GUILD_ID } = process.env;
 
+if (process.env.VERCEL && process.env.VERCEL_ENV !== 'production') {
+  console.log('Skipping /ping registration outside the Vercel production environment.');
+  process.exit(0);
+}
+
 if (!DISCORD_BOT_TOKEN || !DISCORD_APPLICATION_ID) {
+  if (process.argv.includes('--skip-if-unconfigured')) {
+    console.log('Skipping /ping registration; add DISCORD_BOT_TOKEN and DISCORD_APPLICATION_ID in Vercel to register it during deployment.');
+    process.exit(0);
+  }
   console.error('Configura DISCORD_BOT_TOKEN y DISCORD_APPLICATION_ID antes de registrar /ping.');
   process.exit(1);
 }

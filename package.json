@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "node scripts/register-command.mjs --skip-if-unconfigured && next build",
     "start": "next start",
     "register-command": "node scripts/register-command.mjs"
   },
