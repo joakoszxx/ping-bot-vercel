@@ -1,6 +1,6 @@
-# Ping Bot backend
+# Virtual Football visual + Discord bot backend
 
-Este proyecto solo despliega el endpoint de interacciones de Discord en Vercel. No incluye página web. El endpoint valida las firmas de Discord y responde al comando `/ping`.
+La página principal recrea visualmente la pantalla de Account Linking de Virtual Football. Es una maqueta estática: el botón de Discord no realiza autenticación y no incluye scripts de seguimiento ni una integración OAuth. El endpoint del bot sigue funcionando por separado en `/api/interactions` y responde al comando `/ping`.
 
 ## Configuración en Vercel
 
@@ -16,7 +16,7 @@ Después de cambiar variables, vuelve a desplegar. `vercel.json` hace que el bui
 En **Discord Developer Portal → General Information**, configura **Interactions Endpoint URL** así:
 
 ```text
-https://ping-bot-vercel.vercel.app/api/interactions
+https://templeague.vercel.app/api/interactions
 ```
 
 Discord verifica el endpoint con un PING. Para instalar la aplicación, habilita **Guild Install** y el scope `applications.commands` en **Installation**.
