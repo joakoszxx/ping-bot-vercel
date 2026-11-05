@@ -1,0 +1,12 @@
+{
+  "name": "templeague-discord-presence",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node worker.js"
+  },
+  "dependencies": {
+    "discord.js": "14.28.1"
+  }
+}

@@ -6,10 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "vercel-build": "node scripts/register-command.mjs --skip-if-unconfigured && next build",
-    "start": "next start",
+    "start": "node bot-host/worker.js",
     "register-command": "node scripts/register-command.mjs"
   },
   "dependencies": {
+    "discord.js": "14.28.1",
     "next": "15.5.9",
     "react": "19.1.1",
     "react-dom": "19.1.1"

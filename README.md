@@ -1,6 +1,6 @@
-# Virtual Football visual + Discord bot backend
+# Virtual Football visual + Discord bot
 
-La página principal recrea visualmente la pantalla de Account Linking de Virtual Football. Es una maqueta estática: el botón de Discord no realiza autenticación y no incluye scripts de seguimiento ni una integración OAuth. El endpoint del bot sigue funcionando por separado en `/api/interactions` y responde al comando `/ping`.
+La página principal recrea visualmente la pantalla de Account Linking de Virtual Football. Es una maqueta estática: el botón de Discord no realiza autenticación y no incluye scripts de seguimiento ni una integración OAuth. Vercel conserva la web y el endpoint `/api/interactions`, que responde al comando `/ping`. El proceso aparte en `bot-host/` conecta el bot al Gateway de Discord para que aparezca en línea.
 
 ## Configuración en Vercel
 
@@ -18,6 +18,12 @@ En **Discord Developer Portal → General Information**, configura **Interaction
 ```text
 https://templeague.vercel.app/api/interactions
 ```
+
+## Bot en línea en FadeHost
+
+FadeHost ejecuta el bot con `npm start` desde la raíz del repositorio. El proceso en `bot-host/` mantiene la presencia de Discord en línea y muestra `/ping` como actividad; el comando sigue respondiendo desde Vercel. FadeHost recibe el token del bot en su campo **Discord bot token** y lo pasa al proceso como `DISCORD_BOT_TOKEN`. No guardes el token en GitHub.
+
+El plan gratuito de FadeHost incluye un bot con 256 MB, sin suspensión por inactividad, pero pide confirmar cada pocos días desde un correo para mantenerlo activo. El plan gratuito no incluye garantía de disponibilidad continua.
 
 Discord verifica el endpoint con un PING. Para instalar la aplicación, habilita **Guild Install** y el scope `applications.commands` en **Installation**.
 
