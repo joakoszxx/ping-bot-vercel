@@ -1,6 +1,6 @@
 # Virtual Football visual + Discord bot
 
-La página principal recrea visualmente la pantalla de Account Linking de Virtual Football. El botón permite autenticar Discord y Roblox mediante OAuth; tras verificar Roblox, Vercel asigna el rol configurado en Discord. Vercel también conserva el endpoint `/api/interactions`, que responde al comando `/ping`. El proceso aparte en `bot-host/` conecta el bot al Gateway de Discord para que aparezca en línea.
+La página principal recrea visualmente la pantalla de Account Linking de Virtual Football. El botón de la página tiene un flujo OAuth propio. El botón del panel de Discord sigue usando `verification.js` en Wispbyte; Vercel ofrece una ruta HTTPS que reenvía el callback de Roblox a ese proceso. Vercel también conserva el endpoint `/api/interactions`, que responde al comando `/ping`.
 
 ## Configuración en Vercel
 
@@ -15,6 +15,7 @@ En **Project → Settings → Environment Variables**, configura las variables p
 - `APP_BASE_URL`: origen público, `https://templeague.vercel.app`.
 - `OAUTH_COOKIE_SECRET`: secreto aleatorio de al menos 32 caracteres para proteger el estado temporal de OAuth.
 - `ROBLOX_CLIENT_ID` y `ROBLOX_CLIENT_SECRET`: credenciales de la app OAuth creada en Roblox Creator Dashboard.
+- `WISPBYTE_CALLBACK_TARGET`: URL HTTPS con certificado válido del endpoint Express de Wispbyte, terminada en `/verification/callback`.
 
 Después de cambiar variables, vuelve a desplegar. `vercel.json` hace que el build registre el comando en Production. Las variables no llevan el prefijo `NEXT_PUBLIC_`.
 
@@ -24,13 +25,19 @@ En la configuración de OAuth de Discord registra este redirect URI:
 https://templeague.vercel.app/api/verification/discord/callback
 ```
 
-En Roblox Creator Dashboard registra exactamente este Redirect URL y habilita los scopes `openid` y `profile`:
+Para la verificación iniciada desde el panel del bot, en Roblox Creator Dashboard registra este Redirect URL:
 
 ```text
 https://templeague.vercel.app/verification/callback
 ```
 
-El flujo valida `state`, usa PKCE para Roblox y solo guarda una cookie firmada de vida corta en el navegador. No se guardan los tokens OAuth. La persona debe estar ya dentro del servidor Discord para recibir el rol.
+Para el flujo separado iniciado desde el botón de la web, registra también esta URL y habilita `openid` y `profile`:
+
+```text
+https://templeague.vercel.app/api/verification/roblox/callback
+```
+
+En **Wispbyte**, configura `PUBLIC_BASE_URL=https://templeague.vercel.app` y conserva allí `ROBLOX_CLIENT_ID` y `GUILD_ID`. El endpoint de Vercel reenvía `code` y `state` por HTTPS al callback Express de Wispbyte, donde `verification.js` valida el estado, usa el verificador PKCE, actualiza el nickname y guarda `verification.json`. La ruta `/verification/callback` de Vercel no completa el flujo por sí sola; Wispbyte debe ofrecer un hostname con HTTPS y certificado válido.
 
 En **Discord Developer Portal → General Information**, configura **Interactions Endpoint URL** así:
 
@@ -50,7 +57,8 @@ Discord verifica el endpoint con un PING. Para instalar la aplicación, habilita
 
 - `POST /api/interactions`: valida `X-Signature-Ed25519` y `X-Signature-Timestamp`, responde al handshake de Discord y a `/ping`.
 - `GET /api/verification/discord/start` y `/api/verification/discord/callback`: autentican la cuenta Discord.
-- `GET /api/verification/roblox/start` y `/verification/callback`: autentican Roblox y asignan el rol de Discord.
+- `GET /verification/callback`: reenvía el callback del panel Discord a Wispbyte.
+- `GET /api/verification/roblox/start` y `/api/verification/roblox/callback`: flujo OAuth separado de la página web; asigna el rol configurado en Discord.
 
 El token nunca se guarda en GitHub. `.env.local` está excluido de Git.
 

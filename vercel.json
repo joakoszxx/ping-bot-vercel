@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run vercel-build",
   "rewrites": [
-    { "source": "/verification/callback", "destination": "/api/verification/roblox/callback" }
+    { "source": "/verification/callback", "destination": "/api/verification/callback" }
   ]
 }
